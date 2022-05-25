@@ -17,6 +17,8 @@
  * 作者：QAQ
  * 5.25更新 修复 签到 幸运礼盒 功能 
  * 添加 查询余额 提现 ，默认一元，需绑定提现账户 
+   [task_local]
+    0 0 * * 1 https://raw.githubusercontent.com/todayqaq/Scripts/main/ydcd_QAQ.js, tag=有道词典, enabled=true
  */
 
 const { type } = require('os');
