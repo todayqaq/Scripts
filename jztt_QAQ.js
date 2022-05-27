@@ -28,9 +28,9 @@ let notifyStr = '';
 let userCookie = process.env.jzToken;
 let userCookieArr = [];
 
-//文章 广告
+//文章
 let articleNumer = process.env.articleNumer?process.env.articleNumer:3;
-let articleArr = [];
+
 
 
 //自调用函数
@@ -244,6 +244,7 @@ async function getReadId(token){
     let ts = Math.round(new Date().getTime() / 1000).toString();
     let guid = randomString(16);
     let sign = MD5_Encrypt(`${signi}${guid}${ts}`);
+    let articleArr = [];
     //请求url
     let url = `http://api.st615.com/v2/article/list?page=1&limit=20&cid=0&type=1&terminal=Xiaomi&version=2.0.8`;
     //请求header
@@ -269,7 +270,15 @@ async function getReadId(token){
             if(listArr[i].type == 1){
                articleArr.push(`${listArr[i].id}`);
            }
-       }               
+       } 
+       //console.log(articleArr);
+        for(let i=0;i<articleNumer;i++){
+             await read(token,articleArr[i]);
+             await getComment(token,articleArr[i]);
+             await $.wait(20000);
+             await articleCoin(token,articleArr[i]);
+
+         };              
     } else {
         //出错，一般是header缺少东西，或者token不对
         console.log(`错误: ${result.message}`);
@@ -599,7 +608,7 @@ async function articleCoin(token,id){
     await httpRequest('post',urlObject,caller);
     let result = httpResult;
     if(!result) return;
-    console.log('----准备阅读文章领金币任务....');
+    console.log(`----准备阅读文章[${ids}]领金币任务....`);
     if(result.code == 0) {
         console.log(`文章领取：${result.msg}`);
         //notifyStr += `文章领取：${result.msg}`;
