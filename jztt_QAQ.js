@@ -265,7 +265,7 @@ async function getReadId(token){
        } 
        //console.log(articleArr);
         for(let i=0;i<articleNumer;i++){
-             await read(token,articleArr[i]);
+             await read(tokens,articleArr[i]);
              await getComment(token,articleArr[i]);
              await $.wait(20000);
              await articleCoin(token,articleArr[i]);
