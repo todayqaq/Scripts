@@ -62,14 +62,6 @@ async function all(){
     await sign(token);
     await bx(token);
     await getReadId(token);
-    //console.log(articleArr);
-    for(let i=0;i<articleNumer;i++){
-            await read(token,articleArr[i]);
-            await getComment(token,articleArr[i]);
-            await $.wait(20000);
-            await articleCoin(token,articleArr[i]);
-
-        };
     for(let i=0;i<3;i++){
             await share(token);
             await $.wait(3000);
