@@ -155,7 +155,7 @@ async function getAds(token){
     let guid = randomString(16);
     let sign = MD5_Encrypt(`${signi}${guid}${ts}`);
     //请求url
-    let url = `http://api.st615.com/v2/user/task??token=${tokens}`;
+    let url = `http://api.st615.com/v2/user/task?token=${tokens}`;
     //请求header
     let header = {
         'Host':'api.st615.com',
