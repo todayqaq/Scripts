@@ -31,7 +31,6 @@ let userCookieArr = [];
 //文章 广告
 let articleNumer = process.env.articleNumer?process.env.articleNumer:3;
 let articleArr = [];
-let adslistArr = [71,77,98];
 
 
 //自调用函数
@@ -76,11 +75,6 @@ async function all(){
             await $.wait(3000);
         };
     await getAds(token);
-    for(let i=0;i<adslistArr.length;i++){
-        await videos(token,adslistArr[i]);
-        await $.wait(20000);
-
-         };
     await getInfo(token)
     await tx(token)
 }
@@ -154,6 +148,7 @@ async function getAds(token){
     let ts = Math.round(new Date().getTime() / 1000).toString();
     let guid = randomString(16);
     let sign = MD5_Encrypt(`${signi}${guid}${ts}`);
+    let adslistArr = [71,77,98];
     //请求url
     let url = `http://api.st615.com/v2/user/task?token=${tokens}`;
     //请求header
@@ -182,6 +177,11 @@ async function getAds(token){
             }
         } ;
         //console.log(adslistArr);
+        for(let i=0;i<adslistArr.length;i++){
+            await videos(tokens,adslistArr[i]);
+            await $.wait(20000);
+    
+             };
     } else {
         //出错，一般是header缺少东西，或者token不对
         console.log(`错误: ${result.message}`);
@@ -439,7 +439,7 @@ async function videos(token,id) {
     await httpRequest('post',urlObject,caller);
     let result = httpResult;
     if(!result) return;
-    console.log('\n----观看视频----');
+    console.log(`\n----观看视频ID[${id}]----`);
     if(result.code == 0) {
         console.log(`视频观看：${result.msg}`);
         //notifyStr += `视频观看：${result.msg}`;
