@@ -330,6 +330,10 @@ const { type } = require('os');
                  }
                  let result = JSON.parse(data);
                  if (result.code == 0) {
+                    if(result.data.goodsType == 5){
+                        console.log(`\n 开幸运礼盒: ${result.msg} 🎉 \n获得奖品类型 ${result.data.goodsType} , 奖品为 ${result.data.goldInfo.goodsName}  ${result.data.goldInfo.num} 个,  奖品描述 ${result.data.goldInfo.goodsDesc} \n`);
+                        msg += `${JSON.stringify(result.data.goldInfo.goodsName)}\n`
+                    }
                      console.log(`\n 开幸运礼盒: ${result.msg} 🎉 \n获得奖品类型 ${result.data.goodsType} , 奖品为 ${result.data.debrisInfo.goodsName}  ${result.data.debrisInfo.num} 个,  奖品描述 ${result.data.debrisInfo.goodsDesc} \n`);
                      msg += `获得奖品为:${JSON.stringify(result.data.debrisInfo.goodsName)}\n`
                  } else if (result.code == 110) {
