@@ -425,17 +425,7 @@ const { type } = require('os');
                  let result = JSON.parse(data);
                  if (result.code == 0) {
  
-                     console.log(`\n 签到 成功 🎉 `);
-                     if (result.data.lotteryInfo.freeTimes !== 0) {
- 
-                         console.log(`\n 你可以开幸运礼盒 ${result.data.lotteryInfo.freeTimes} 次`);
-                         await $.wait(2 * 1000);
-                         await open_box();
- 
-                     } else {
-                         
-                     }
- 
+                     console.log(`\n 签到 成功 🎉 `);                    
                  } else if (result.code == 1) {
                      console.log(`签到：${result.msg}`)
                      msg += `签到:今日已签到\n`
