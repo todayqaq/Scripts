@@ -1,7 +1,7 @@
 /* 
 域名被墙检测
 
-青龙环境变量 domains  多域名使用@分割，不需要填写http(s)://
+青龙环境变量 domains  多域名使用@分割，填写完整网址http(s)://www.google.com
 
 使用第三方接口，每日限额10次，适量运行，氪金可加成
 
@@ -42,7 +42,7 @@ async function checkDomain(user){
             'Connection' : 'keep-alive',
             'Accept-Language' : 'zh-CN,zh-Hans;q=0.8',
             'Accept-Encoding' : 'gzip',
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; MI 8 Lite Build/QKQ1.190910.002;wv)AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/96.0.4664.92 Mobile Safari/537.36jiuzhang/android',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36',
         },
     }
     await httpRequest('get',urlObject)
