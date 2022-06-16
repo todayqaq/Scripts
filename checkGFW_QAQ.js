@@ -53,11 +53,11 @@ async function checkDomain(user){
         console.log(`域名[${index}][${user}]检测成功：${result.msg},剩余检测次数：${result.num}`)
     }else if(result.code == 201 ){
         console.log(`域名[${index}][${user}]检测成功：${result.msg},剩余检测次数：${result.num}`)
-        notifyStr += `域名[${index}][${user}]检测成功：${result.msg},剩余检测次数：${result.num}`
+        notifyStr += `\n域名[${index}][${user}]检测成功：${result.msg},剩余检测次数：${result.num}`
 
     }else{
         console.log(`域名[${index}][${user}]检测失败：${result.msg}`)
-        notifyStr += `域名[${index}][${user}]检测失败：${result.msg}`
+        notifyStr += `\n域名[${index}][${user}]检测失败：${result.msg}`
     }
 }
 async function showmsg() {
