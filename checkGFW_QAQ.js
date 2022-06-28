@@ -85,7 +85,7 @@ async function versionCheck(name,type){
     let result = httpResult;
     if(!result) return
     //console.log(result)
-    return result.match(/VersionCheck = "([\d\.]+)"/)[1]
+    return result.match(/VersionCheck = '([\d\.]+)'/)[1]
 }
 async function tips() {
 	let Version_latest = await versionCheck('checkGFW_QAQ', '1');
