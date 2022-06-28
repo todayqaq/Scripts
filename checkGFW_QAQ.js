@@ -20,7 +20,7 @@ let userList = []
 let domains = ($.isNode() ? process.env.domains : $.getdata('domains')) || '';
 let userIdx = 0
 let token = '' //填写自己的token或者留空
-let versionCheck = '1.1'
+let versionCheck = '1.2'
 let changeLog = ''
 !(async () => {
         if(!(await checkEnv())) return
