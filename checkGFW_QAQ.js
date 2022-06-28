@@ -19,6 +19,8 @@ let httpResult //global buffer
 let userList = []
 let domains = ($.isNode() ? process.env.domains : $.getdata('domains')) || '';
 let userIdx = 0
+let versionLocal = '1.0'
+let Changelog = ''
 !(async () => {
         if(!(await checkEnv())) return
         await tips();
