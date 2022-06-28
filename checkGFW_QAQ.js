@@ -19,7 +19,7 @@ let httpResult //global buffer
 let userList = []
 let domains = ($.isNode() ? process.env.domains : $.getdata('domains')) || '';
 let userIdx = 0
-//let token = '自己的token'
+let token = '' //填写自己的token或者留空
 let versionCheck = '1.1'
 let changeLog = ''
 !(async () => {
