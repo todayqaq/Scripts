@@ -21,6 +21,7 @@ let domains = ($.isNode() ? process.env.domains : $.getdata('domains')) || '';
 let userIdx = 0
 !(async () => {
         if(!(await checkEnv())) return
+        await tips();
         console.log('\n================== 开始检测 ==================')
         for(let user of userList) {
             index = ++userIdx
@@ -59,6 +60,35 @@ async function checkDomain(user){
         console.log(`域名[${index}][${user}]检测失败：${result.msg}`)
         notifyStr += `\n域名[${index}][${user}]检测失败：${result.msg}`
     }
+}
+async function versionCheck(name,type){
+    if(type == 1){
+        versionUrl = `https://raw.githubusercontent.com/todayqaq/Scripts/main/${name}.js`
+    }else if(type == 2){
+        versionUrl = ``
+    }
+    let url = versionUrl
+    let host = (url.split('//')[1]).split('/')[0]
+    let urlObject = {
+        url:url,
+        headers: {
+            'Host' : host,
+            'Connection' : 'keep-alive',
+            'Accept-Language' : 'zh-CN,zh-Hans;q=0.8',
+            'Accept-Encoding' : 'gzip',
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; MI 8 Lite Build/QKQ1.190910.002;wv)AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/96.0.4664.92 Mobile Safari/537.36jiuzhang/android',
+        },
+    }
+    await httpRequest('get',urlObject)
+    let result = httpResult;
+    if(!result) return
+    //console.log(result)
+    return result.match(/VersionCheck = "([\d\.]+)"/)[1]
+}
+async function tips() {
+	let Version_latest = await versionCheck('checkGFW_QAQ', '1');
+	let Version = `📌 本地脚本: ${versionLocal}  远程仓库脚本:  ${Version_latest}`
+	console.log(`${Version}\n📌 🆙 更新日志: ${Changelog}`);	
 }
 async function showmsg() {
     if(!notifyStr) return
@@ -102,7 +132,12 @@ async function httpRequest(method,url) {
                     console.log(JSON.stringify(err));
                     $.logErr(err);
                 } else {
-                    if (safeGet(data)) {
+                    str_resp_header=JSON.stringify(resp.headers).replace(/-/g,'_').search('"content_type":"text/plain; charset=utf_8",')
+                    //console.log(str_resp_header)
+                    if(str_resp_header > 0){
+                        httpResult = data;
+                        if(logDebug) console.log(httpResult);
+                    }else if (safeGet(data)) {
                         httpResult = JSON.parse(data);
                         if(logDebug) console.log(httpResult);
                     }
