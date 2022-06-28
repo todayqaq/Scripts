@@ -66,7 +66,7 @@ async function checkDomain(user){
 }
 async function version_Check(name,type){
     if(type == 1){
-        versionUrl = `https://raw.githubusercontent.com/todayqaq/Scripts/main/${name}.js`
+        versionUrl = `https://raw.gh.fakev.cn/todayqaq/Scripts/main/${name}.js`
     }else if(type == 2){
         versionUrl = ``
     }
