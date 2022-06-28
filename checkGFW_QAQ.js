@@ -19,6 +19,7 @@ let httpResult //global buffer
 let userList = []
 let domains = ($.isNode() ? process.env.domains : $.getdata('domains')) || '';
 let userIdx = 0
+//let token = '自己的token'
 let versionCheck = '1.1'
 let changeLog = ''
 !(async () => {
@@ -36,7 +37,7 @@ let changeLog = ''
 .catch((e) => $.logErr(e))
 .finally(() => $.done())
 async function checkDomain(user){
-    let url = `http://check.uomg.com/api/urlsec/wall?token=&domain=${user}`
+    let url = `http://check.uomg.com/api/urlsec/wall?token=${token}&domain=${user}`
     let host = (url.split('//')[1]).split('/')[0]
     let urlObject = {
         url:url,
