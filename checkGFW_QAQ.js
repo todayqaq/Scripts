@@ -19,8 +19,8 @@ let httpResult //global buffer
 let userList = []
 let domains = ($.isNode() ? process.env.domains : $.getdata('domains')) || '';
 let userIdx = 0
-let versionLocal = '1.1'
-let Changelog = ''
+let versionCheck = '1.1'
+let changeLog = ''
 !(async () => {
         if(!(await checkEnv())) return
         await tips();
@@ -85,12 +85,12 @@ async function versionCheck(name,type){
     let result = httpResult;
     if(!result) return
     //console.log(result)
-    return result.match(/VersionCheck = '([\d\.]+)'/)[1]
+    return result.match(/versionCheck = '([\d\.]+)'/)[1]
 }
 async function tips() {
 	let Version_latest = await versionCheck('checkGFW_QAQ', '1');
-	let Version = `📌 本地脚本: ${versionLocal}  远程仓库脚本:  ${Version_latest}`
-	console.log(`${Version}\n📌 🆙 更新日志: ${Changelog}`);	
+	let Version = `📌 本地脚本: ${versionCheck}  远程仓库脚本:  ${Version_latest}`
+	console.log(`${Version}\n📌 🆙 更新日志: ${changeLog}`);	
 }
 async function showmsg() {
     if(!notifyStr) return
