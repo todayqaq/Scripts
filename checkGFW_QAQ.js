@@ -63,7 +63,7 @@ async function checkDomain(user){
         notifyStr += `\n域名[${index}][${user}]检测失败：${result.msg}`
     }
 }
-async function versionCheck(name,type){
+async function version_Check(name,type){
     if(type == 1){
         versionUrl = `https://raw.githubusercontent.com/todayqaq/Scripts/main/${name}.js`
     }else if(type == 2){
@@ -88,7 +88,7 @@ async function versionCheck(name,type){
     return result.match(/versionCheck = '([\d\.]+)'/)[1]
 }
 async function tips() {
-	let Version_latest = await versionCheck('checkGFW_QAQ', '1');
+	let Version_latest = await version_Check('checkGFW_QAQ', '1');
 	let Version = `📌 本地脚本: ${versionCheck}  远程仓库脚本:  ${Version_latest}`
 	console.log(`${Version}\n📌 🆙 更新日志: ${changeLog}`);	
 }
