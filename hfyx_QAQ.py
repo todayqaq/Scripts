@@ -54,8 +54,9 @@ def get_user_points():
             print('今日签到状态:',r.json()['data']['todaySignInStatus'])
             global notice_str
             notice_str += '用户积分:'+r.json()['data']['pointBalance']+'\n'
-            notice_str += '今日签到状态:'+str(r.json()['data']['todaySignInStatus'])
+            notice_str += '今日签到状态:'+str(r.json()['data']['todaySignInStatus'])+'\n'
             if(r.json()['data']['todaySignInStatus'] != True):
+                print('开始签到')
                 user_sign()
         else:
             print(r.json()['message'])
