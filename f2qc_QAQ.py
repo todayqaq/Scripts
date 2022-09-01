@@ -35,9 +35,9 @@ def share():
 
     r = requests.post(url,headers=headers,data=json.dumps(data_body))
     if r.status_code == 200:
-        #print(r.json())
-        print('分享获得积分:',r.json()['data']['point'])
-            
+        #print(r.json())        
+        print('分享结果:',r.json()['success'])
+        
     else:
         print('请求失败')
 
