@@ -5,14 +5,15 @@ from Crypto.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
 from Crypto.PublicKey import RSA
 notice_str = ''
 userId = ''
-## 抓包后找到 X-HSBC-E2E-Trust-Token 填入自己的信息
+## 抓包后找到 X-HSBC-E2E-Trust-Token、X-HSBC-Pinnacle-DeviceNo 填入自己的信息
 hfyx_token = ''
+hfyx_deviceNo = ''
 
 def get_user_info():
     url = 'https://m.prod.app.hsbcfts.com.cn/api/api/v1/user/userinfo/singleuser'
     headers = {
     'X-HSBC-Global-Channel-Id':'MOBILE_A',
-    'X-HSBC-Pinnacle-DeviceNo':'99149179388770f5',
+    'X-HSBC-Pinnacle-DeviceNo':'{}'.format(hfyx_deviceNo),
     'charset':'utf-8',
     'Connection':'Keep-Alive',
     'Accept-Encoding':'gzip',
@@ -38,7 +39,7 @@ def get_user_points():
     url = 'https://m.prod.app.hsbcfts.com.cn/api/sapp/biz/pointscenter/pointsindex/v1'
     headers = {
     'X-HSBC-Global-Channel-Id':'MOBILE_A',
-    'X-HSBC-Pinnacle-DeviceNo':'99149179388770f5',
+    'X-HSBC-Pinnacle-DeviceNo':'{}'.format(hfyx_deviceNo),
     'charset':'utf-8',
     'Connection':'Keep-Alive',
     'Accept-Encoding':'gzip',
@@ -91,7 +92,7 @@ def user_sign():
     headers = {
     'Content-Type': 'application/json',
     'X-HSBC-Global-Channel-Id':'MOBILE_A',
-    'X-HSBC-Pinnacle-DeviceNo':'99149179388770f5',
+    'X-HSBC-Pinnacle-DeviceNo':'{}'.format(hfyx_deviceNo),
     'charset':'utf-8',
     'Connection':'Keep-Alive',
     'Accept-Encoding':'gzip',
