@@ -3,6 +3,7 @@
 import json,time,hashlib,base64,requests,notify
 from urllib.parse import quote, unquote
 
+## Hipc 小程序签到
 ## 抓包后找到 Token 填入自己的信息
 
 HipcToken = ''
