@@ -3,6 +3,7 @@
 import requests,json
 from urllib.parse import quote, unquote
 
+## 非凡汽车 签到、转发
 ## 抓包后找到 token、watch-man-token 填入自己的信息
 f2_token = ""
 f2_watch_man_token = ""
