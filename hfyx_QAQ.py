@@ -5,6 +5,8 @@ from Crypto.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
 from Crypto.PublicKey import RSA
 notice_str = ''
 userId = ''
+
+## 汇丰优选 安卓app签到 
 ## 抓包后找到 X-HSBC-E2E-Trust-Token、X-HSBC-Pinnacle-DeviceNo 填入自己的信息
 hfyx_token = ''
 hfyx_deviceNo = ''
@@ -59,6 +61,8 @@ def get_user_points():
             if(r.json()['data']['todaySignInStatus'] != True):
                 print('开始签到')
                 user_sign()
+            else:
+                print(r.json()['message'])
         else:
             print(r.json()['message'])
     else:
@@ -104,14 +108,16 @@ def user_sign():
     if r.status_code == 200:
         if r.json()['retCode'] == 10091:
            print(r.json()['message'])
-        if r.json()['retCode'] == 20004:
+        elif r.json()['retCode'] == 20004:
            print(r.json()['message'])
-        if r.json()['retCode'] == 10000:
+        elif r.json()['retCode'] == 10000:
            print('签到结果:',r.json()['data']['signInSuccess'])
            print('获得积分:',r.json()['data']['pointAmount'])
            global notice_str
            notice_str += '签到结果:'+str(r.json()['data']['signInSuccess'])+'\n'
            notice_str += '获得积分:'+str(r.json()['data']['pointAmount'])
+        else:
+            print(r.json()['message'])
     else:
         print('请求失败')
 
