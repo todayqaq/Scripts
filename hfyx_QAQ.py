@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ## 需要安装依赖库 requests、pycrypto
-import requests,json,time,uuid,hashlib,base64
+import requests,json,time,uuid,hashlib,base64,notify
 from Crypto.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
 from Crypto.PublicKey import RSA
 notice_str = ''
@@ -124,3 +124,4 @@ def user_sign():
 if __name__ == "__main__":
     get_user_info()
     get_user_points()
+    notify.send('汇丰优选',notice_str)
