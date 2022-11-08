@@ -78,7 +78,7 @@ def get_user_score():
         global notice_str
         if r.json()['code'] == 100:
             print('可使用容量：',r.json()['data']['can_use_score'])
-            notice_str += '可使用容量:'+str(r.json()['data']['can_use_score'])+' MB'+'\n'
+            notice_str += '可使用容量:'+str(r.json()['data']['can_use_score'])+' MB'
         else:
             print(r.json()[message])
     else:
