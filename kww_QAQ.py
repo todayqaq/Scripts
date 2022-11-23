@@ -33,11 +33,14 @@ def get_user_info():
             'Accept-Encoding': 'gzip, deflate, '
     }
     r = requests.get(url,headers=headers)
-    global memberName
+    global memberName,openId,headUrl,rowKey
     if r.status_code == 200:
         print(r.json()['msg'])
         print('用户:',r.json()['ids']['memberInfo']['userCname'])
         memberName = r.json()['ids']['memberInfo']['userCname']
+        openId = r.json()['ids']['memberInfo']['openid']
+        headUrl = r.json()['ids']['memberInfo']['headUrl']
+        rowKey = r.json()['ids']['memberInfo']['rowKey']
         global notice_str
         notice_str += '用户:'+str(r.json()['ids']['memberInfo']['userCname'])+'\n'
         #print(r.json())
@@ -176,7 +179,6 @@ def task_flag():
     }
     r = requests.get(url,headers=headers)
     if r.status_code == 200:
-        print(r.json())
         print('订阅活动通知:',True)
         global notice_str
         notice_str += '订阅活动通知:'+str(True)+'\n'
@@ -193,7 +195,6 @@ def sign_task_flag():
     }
     r = requests.get(url,headers=headers)
     if r.status_code == 200:
-        print(r.json())
         print('开启签到提醒:',True)
         global notice_str
         notice_str += '开启签到提醒:'+str(True)+'\n'
@@ -211,8 +212,7 @@ def submit_user_info():
     body = {"kwwMember.certNo": "","kwwMember.fullName": "李逍遥","kwwMember.sex": "0","kwwMember.phone": "18866668888","kwwMember.birthday": "1982-09-20","kwwMember.userCname": "{}".format(memberName),"kwwMember.headUrl": "{}".format(headUrl),"pageName": "kww-member-edit","formName": "editForm","kwwMember.memberId": "{}".format(memberId),"kwwMember.rowKey": "{}".format(rowKey),"memberId": "{}".format(memberId)}
     r = requests.post(url,headers=headers,data=json.dumps(body))
     if r.status_code == 200:
-        print(r.json())
-        print('完善信息:',r,json()['msg'])
+        print('完善信息:',r.json()['msg'])
         global notice_str
         notice_str += '完善信息:'+str(True)+'\n'
     else:
