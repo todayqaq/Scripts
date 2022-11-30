@@ -6,6 +6,7 @@ from urllib.parse import quote, unquote
 # 抓包 填写自己的 memberId
 # 微信小程序 口味王 
 # 完成查询积分、签到、收青果、阅读文章、完善信息、开启签到提醒、订阅活动通知
+# 小游戏 天降好礼、海岛游乐场 [superSurprise_QAQ.py,underseaGame_QAQ.py]
 # 其他任务待添加
 
 memberId = ''
