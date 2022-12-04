@@ -20,7 +20,7 @@
 const jsname = '疯狂摇奖机'
 const $ = Env(jsname)
 
-var redirect,loginUrl,Cookie,consumerId,index_html,token_new,DuibaToken_key,token,orderId
+var redirect,loginUrl,Cookie,consumerId,index_html,token_new,DuibaToken_key,token,orderId,Limit
 
 
 var kwwmemberId = ($.isNode() ? process.env.kwwmemberId : $.getdata("kwwmemberId")) || ""
@@ -52,27 +52,39 @@ try{
             let num = index + 1
             console.log(`\n==== 开始【第 ${num} 个账号】====\n`)
             memberId = kwwmemberIdArr[index];
-            await start()        
+            await $.wait(1000)
+            await all()     
         }       
        } 
 })()
-async function start(){
-    await activity_url()
-    await login_free_plugin()
-    await setCookies()
-    await game_info()        
-}
 
-async function play_game(){
-    console.log('准备开始抽奖')
-    await get_html()
-    await script_key(index_html)
-    await getTokenNew()
-    await decrypt_token(token_new,DuibaToken_key)
-    await doJoin()
-    console.log('等待10秒获得奖励')
-    await $.wait(10000)
-    await getOrderStatus()
+
+async function all(){
+    await activity_url()
+    await $.wait(1000)
+    await login_free_plugin()
+    await $.wait(1000)
+    await setCookies()
+    await $.wait(1000)
+    await game_info()
+    await $.wait(1000)
+    if (Limit) {
+        console.log('准备开始抽奖')
+        await get_html()
+        await $.wait(1000)
+        await script_key(index_html)
+        await $.wait(1000)
+        await getTokenNew()
+        await $.wait(1000)
+        await decrypt_token(token_new,DuibaToken_key)
+        await doJoin()
+        await $.wait(1000)
+        console.log('等待10秒获得奖励')
+        await $.wait(10000)
+        await getOrderStatus()
+    } else {
+        console.log('今日抽奖次数已完成')
+    }
 }
 
 async function activity_url(){
@@ -118,7 +130,7 @@ async function activity_url(){
 }
 
 async function login_free_plugin(){
-    console.log('获得活动免登录地址')
+    //console.log('获得活动免登录地址')
     return new Promise((resolve)=>{
     let url_redirect = encodeURIComponent(redirect)
     let url = `https://member.kwwblcj.com/member/api/info/?userKeys=v1.0&pageName=loginFreePlugin&formName=searchForm&uid=${memberId}&levelCode=1&redirect=${url_redirect}`
@@ -141,8 +153,7 @@ async function login_free_plugin(){
             //console.log(result)
             if(result.flag == 'T'){
                 loginUrl = result.result
-                //console.log(loginUrl)
-                
+                //console.log(loginUrl)                
             } else {
                 console.log(result)
             }            
@@ -176,11 +187,12 @@ async function setCookies() {
                         }
         try {
             request(options,function (err, res, body) {
-                    if (!err && res.statusCode == 200){
+                    if (!err && res.statusCode == 200){                        
                         let cookie = res.request.headers.cookie;                                           
                         Cookie = cookie
                         //console.log(Cookie)
-                        resolve()                       
+                        resolve()
+                                              
                     }
                                      
                 })
@@ -448,27 +460,18 @@ async function game_info(){
             data:`hdType=dev&hdToolId=&preview=false&actId=202214172275896&adslotId=`
         } 
         axios.request(options).then(function (response) {
-            try {               
+            try {              
                 let result = response.data
                 //console.log(result)
-                if (result.element.freeLimit > 0 ) {
-                    console.log('开始游戏')
-                    play_game()
-
-                } else {
-                    console.log('今日抽奖次数已完成')
-                }
+                Limit = result.element.freeLimit
             } catch (e) {
                 console.log(e)
-
             }
-    }).then(() => {
-        resolve();
-    }).catch(function (err) {
-        console.log(err);
+        }).then(() => {
+            resolve();
+        }).catch(function (err) {
+            console.log(err);
     })
-
-
     })
 }
 
