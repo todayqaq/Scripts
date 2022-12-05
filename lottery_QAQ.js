@@ -60,6 +60,8 @@ try{
 
 
 async function all(){
+    await user()
+    await $.wait(1000)
     await activity_url()
     await $.wait(1000)
     await login_free_plugin()
@@ -85,6 +87,43 @@ async function all(){
     } else {
         console.log('今日抽奖次数已完成')
     }
+}
+
+async function user(){
+    return new Promise((resolve)=>{
+        let ts = Math.round(new Date().getTime() / 1000).toString();
+        let url = `https://member.kwwblcj.com/member/api/info/?userKeys=v1.0&pageName=member-info-index-search&formName=searchForm&kwwMember.memberId=${memberId}&kwwMember.unionid=undefined&memberId=${memberId}`
+        let host = (url.split('//')[1]).split('/')[0]
+        let options = {
+                url: url,
+                headers: {
+                    'Host' : host,
+                    'Connection' : 'keep-alive',
+                    'Accept-Language' : 'zh-CN,zh-Hans;q=0.8',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Accept': 'application/json; charset=UTF-8',
+                    'Accept-Encoding' : 'gzip',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36',
+                }
+            }
+           axios.request(options).then(function (response) {
+                try {
+                    let result = response.data
+                    if (result.flag == 'T' ) {
+                        console.log(`用户：${result.ids.memberInfo.userCname}`)
+                    } else {
+                        console.log(result)
+                    }
+                                                                    
+                } catch (e) {
+                   console.log(e)
+                }
+            }).then(() => {
+                resolve();
+            }).catch(function (err) {
+                console.log(err);
+            })   
+        }) 
 }
 
 async function activity_url(){
