@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import requests,json,time,random,notify,datetime
+import requests,json,time,random,notify,datetime,config
 from urllib.parse import quote, unquote
 
 # 抓包 填写自己的 memberId
@@ -9,7 +9,7 @@ from urllib.parse import quote, unquote
 # 小游戏 天降好礼、海岛游乐场 [superSurprise_QAQ.py,underseaGame_QAQ.py]
 # 其他任务待添加
 
-memberId = ''
+memberId = config.kww['memberId']
 
 
 # 不需要填写
