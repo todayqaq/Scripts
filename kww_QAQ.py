@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import requests,json,time,random,notify,datetime,config
+import requests,json,time,random,datetime,config,notify,hashlib
 from urllib.parse import quote, unquote
 
 # 抓包 填写自己的 memberId
@@ -14,6 +14,7 @@ memberId = config.kww['memberId']
 
 # 不需要填写
 memberName = ''
+l = [ "A", "Z", "B", "Y", "C", "X", "D", "T", "E", "S", "F", "R", "G", "Q", "H", "P", "I", "O", "J", "N", "k", "M", "L", "a", "c", "d", "f", "h", "k", "p", "y", "n" ]
 article_Title = []
 article_total = 0
 notice_str = ''
@@ -27,11 +28,20 @@ today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
 
 def get_user_info():
     url = 'https://member.kwwblcj.com/member/api/info/?userKeys=v1.0&pageName=member-info-index-search&formName=searchForm&kwwMember.memberId='+str(memberId)+'&kwwMember.unionid=undefined&memberId='+str(memberId)
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     headers = {
             'Connection': 'keep-alive',
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
             'Referer': 'https://servicewechat.com/wxfb0905b0787971ad/34/page-frame.html',
-            'Accept-Encoding': 'gzip, deflate, '
+            'Accept-Encoding': 'gzip, deflate, ',
+            'user-paramname': 'memberId',
+            'user-random': numerstr,
+            'user-sign': sign,
+            'user-timestamp': ts,
     }
     r = requests.get(url,headers=headers)
     global memberName,openId,headUrl,rowKey
@@ -51,10 +61,19 @@ def get_user_info():
 
 def get_signin_info():
     url = 'https://member.kwwblcj.com/member/api/list/?userKeys=v1.0&pageName=selectSignInfo&formName=searchForm&memberId={}'.format(memberId)
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     headers = {
             'Connection': 'keep-alive',
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
-            'Accept-Encoding': 'gzip, deflate'
+            'Accept-Encoding': 'gzip, deflate',
+            'user-paramname': 'memberId',
+            'user-random': numerstr,
+            'user-sign': sign,
+            'user-timestamp': ts,
     }
     r = requests.get(url,headers=headers)
     global memberName,openId,headUrl,rowKey
@@ -68,16 +87,24 @@ def get_signin_info():
     else:
         print('请求失败')
 
-def sign_in():
-    
+def sign_in():   
     url = 'https://member.kwwblcj.com/member/api/submit/?userKeys=v1.0'
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     body = {"pageName": "AddSignSvmInfo","formName": "addForm","orderNo": "1","paramNo": "10","cateId": "510595814817529856","memberId": "{}".format(memberId),"memberName": "{}".format(memberName)}
     headers = {
         'Connection':'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
         'content-type': 'application/json',
         'Referer': 'https://servicewechat.com/wxfb0905b0787971ad/34/page-frame.html',
-        'Accept-Encoding': 'gzip, deflate'
+        'Accept-Encoding': 'gzip, deflate',
+        'user-paramname': 'memberId',
+        'user-random': numerstr,
+        'user-sign': sign,
+        'user-timestamp': ts,
     }
 
     r = requests.post(url,headers=headers,data=json.dumps(body))
@@ -92,11 +119,20 @@ def sign_in():
 
 def get_score():
     url= 'https://member.kwwblcj.com/member/api/list/?userKeys=v1.0&pageName=select-member-score&formName=searchForm&memberId={}'.format(memberId)
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     headers = {
         'Connection':'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
         'content-type': 'application/json',
-        'Accept-Encoding': 'gzip, deflate' 
+        'Accept-Encoding': 'gzip, deflate',
+        'user-paramname': 'memberId',
+        'user-random': numerstr,
+        'user-sign': sign,
+        'user-timestamp': ts,
     }
     r = requests.get(url,headers=headers)
     if r.status_code == 200:
@@ -134,12 +170,20 @@ def read_task():
     articleTitle = article_Title[random.randrange(0,int(article_total))]
     title = quote(articleTitle)
     url = 'https://member.kwwblcj.com/member/api/list/?userKeys=v1.0&pageName=setNewsReadTaskFlag&formName=addForm&memberId={}'.format(memberId)+'&userCname={}'.format(memberName)+'&articleTitle={}'.format(title)
-
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     headers ={
         'Connection':'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
         'content-type': 'application/json',
-        'Accept-Encoding': 'gzip, deflate'
+        'Accept-Encoding': 'gzip, deflate',
+        'user-paramname': 'memberId',
+        'user-random': numerstr,
+        'user-sign': sign,
+        'user-timestamp': ts,
     }
     r = requests.get(url,headers=headers)
     if r.status_code == 200:
@@ -154,13 +198,23 @@ def read_task():
 
 def green():
     url = 'https://member.kwwblcj.com/member/api/list/?userKeys=v1.0&pageName=activeTaskFlag&formName=editForm&memberId={}'.format(memberId)+'&userCname={}'.format(memberName)
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     headers = {
         'Connection':'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
         'content-type': 'application/json',
-        'Accept-Encoding': 'gzip, deflate'
+        'Accept-Encoding': 'gzip, deflate',
+        'user-paramname': 'memberId',
+        'user-random': numerstr,
+        'user-sign': sign,
+        'user-timestamp': ts,
+        'Referer': 'https://servicewechat.com/wxfb0905b0787971ad/42/page-frame.html',
     }
-    r =requests.get(url,headers)
+    r =requests.get(url,headers=headers)
     if r.status_code == 200:
         if r.json()['flag'] == 'T':
             print('访问青果',True)
@@ -172,11 +226,20 @@ def green():
 
 def task_flag():
     url = 'https://member.kwwblcj.com/member/api/list/?userKeys=v1.0&pageName=setOpenSubscribeTaskFlag&formName=addForm&memberId={}'.format(memberId)+'&userCname={}'.format(memberName)+'&openId={}'.format(openId)
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     headers = {
         'Connection':'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
         'content-type': 'application/json',
         'Accept-Encoding': 'gzip, deflate',
+        'user-paramname': 'memberId',
+        'user-random': numerstr,
+        'user-sign': sign,
+        'user-timestamp': ts,
     }
     r = requests.get(url,headers=headers)
     if r.status_code == 200:
@@ -188,11 +251,20 @@ def task_flag():
 
 def sign_task_flag():
     url = 'https://member.kwwblcj.com/member/api/list/?userKeys=v1.0&pageName=setOpenSignTaskFlag&formName=addForm&memberId={}'.format(memberId)+'&userCname={}'.format(memberName)+'&openId={}'.format(openId)
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     headers = {
         'Connection':'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
         'content-type': 'application/json',
         'Accept-Encoding': 'gzip, deflate',
+        'user-paramname': 'memberId',
+        'user-random': numerstr,
+        'user-sign': sign,
+        'user-timestamp': ts,
     }
     r = requests.get(url,headers=headers)
     if r.status_code == 200:
@@ -204,11 +276,20 @@ def sign_task_flag():
 
 def submit_user_info():
     url = 'https://member.kwwblcj.com/member/api/submit/?userKeys=v1.0'
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     headers = {
         'Connection':'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
         'content-type': 'application/json',
         'Accept-Encoding': 'gzip, deflate',
+        'user-paramname': 'memberId',
+        'user-random': numerstr,
+        'user-sign': sign,
+        'user-timestamp': ts,
     }
     body = {"kwwMember.certNo": "","kwwMember.fullName": "李逍遥","kwwMember.sex": "0","kwwMember.phone": "18866668888","kwwMember.birthday": "1982-09-20","kwwMember.userCname": "{}".format(memberName),"kwwMember.headUrl": "{}".format(headUrl),"pageName": "kww-member-edit","formName": "editForm","kwwMember.memberId": "{}".format(memberId),"kwwMember.rowKey": "{}".format(rowKey),"memberId": "{}".format(memberId)}
     r = requests.post(url,headers=headers,data=json.dumps(body))
@@ -226,12 +307,21 @@ def daily_task():
 
 def task_list():
     url = 'https://member.kwwblcj.com/member/api/list/?userKeys=v1.0&pageName=select-task-list&formName=searchForm&memberId={}'.format(memberId)
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     headers = {
         'Connection':'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
         'content-type': 'application/json',
         'Accept-Encoding': 'gzip, deflate',
         'Referer': 'https://servicewechat.com/wxfb0905b0787971ad/34/page-frame.html',
+        'user-paramname': 'memberId',
+        'user-random': numerstr,
+        'user-sign': sign,
+        'user-timestamp': ts,
     }
     r = requests.get(url,headers=headers)
     global completed
@@ -272,6 +362,17 @@ def do_task():
             green()
         elif infoId == '510595931184300032':
             read_task()
+
+def s(e,t,a):
+    n = e + t + l[a]
+    return encript(n)
+
+## MD5
+def encript(str):
+    md5 = hashlib.md5()
+    md5.update(str.encode('utf-8'))
+    res = md5.hexdigest()
+    return res
 
 if __name__ == "__main__":
     get_user_info()

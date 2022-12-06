@@ -18,13 +18,14 @@ from Crypto.PublicKey import RSA
 
 
 memberId = config.kww['memberId']
+l = [ "A", "Z", "B", "Y", "C", "X", "D", "T", "E", "S", "F", "R", "G", "Q", "H", "P", "I", "O", "J", "N", "k", "M", "L", "a", "c", "d", "f", "h", "k", "p", "y", "n" ]
 redirect = ''
 auto_login_url = ''
 cookie = ''
 
 def activity_url():
     global redirect
-    ts = str(int(time.time() * 1000))
+    ts = str(int(time.time() * 1000))  
     url = 'https://cms.kwwblcj.com/data/c05.json?T={}'.format(ts)+'&memberId={}'.format(memberId)
     #print(url)
     headers = {
@@ -47,13 +48,22 @@ def activity_url():
 def login_free_plugin():
     global auto_login_url,cookie
     url_redirect = quote(redirect)
-    url = 'https://member.kwwblcj.com/member/api/info/?userKeys=v1.0&pageName=loginFreePlugin&formName=searchForm&uid={}'.format(memberId)+'&levelCode=1&redirect={}'.format(url_redirect)
+    url = 'https://member.kwwblcj.com/member/api/info/?userKeys=v1.0&pageName=loginFreePlugin&formName=searchForm&uid={}'.format(memberId)+'&levelCode=1&redirect={}'.format(url_redirect)+'&actionType=%E5%A4%A9%E9%99%8D%E5%A5%BD%E7%A4%BC&actionDesc={}'.format(url_redirect)+'&objId=C05&memberId={}'.format(memberId)
     #print(url)
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
     headers = {
         'Connection':'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
         'content-type': 'application/json',
-        'Accept-Encoding': 'gzip, deflate'
+        'Accept-Encoding': 'gzip, deflate',
+        'user-paramname': 'memberId',
+        'user-random': numerstr,
+        'user-sign': sign,
+        'user-timestamp': ts,
     }
     r = requests.get(url=url,headers=headers)
     if r.status_code == 200:
@@ -199,6 +209,10 @@ def join_record_status(Id):
         #print(r.json())
         print(r.json()['success'])
         print(r.json()['data']['prizeInfo']['prizeName'])
+
+def s(e,t,a):
+    n = e + t + l[a]
+    return encript(n)
 
 ## MD5
 def encript(str):
