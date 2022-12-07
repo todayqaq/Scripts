@@ -14,14 +14,58 @@ from Crypto.PublicKey import RSA
 ## 口味王 
 ## 天降好礼 小游戏
 ## 引入配置文件 config.py
+## 抓包 在配置文件config中kww_memberId 填写自己的 memberId
+## 支持多账号
 
-
-
-memberId = config.kww['memberId']
 l = [ "A", "Z", "B", "Y", "C", "X", "D", "T", "E", "S", "F", "R", "G", "Q", "H", "P", "I", "O", "J", "N", "k", "M", "L", "a", "c", "d", "f", "h", "k", "p", "y", "n" ]
-redirect = ''
-auto_login_url = ''
-cookie = ''
+
+def start():
+    print("===== 共发现 " + str(len(config.kww_memberId)) + " 个账号! =====")
+    for inx, id in enumerate(config.kww_memberId):
+        global memberId,redirect,auto_login_url,cookie
+        print("===== 开始第" + str(inx + 1) + "个账号 =====")
+        memberId = id
+        redirect = ''
+        auto_login_url = ''
+        cookie = ''
+        all()
+        time.sleep(2)
+
+def all():
+    get_user_info()
+    activity_url()
+    login_free_plugin()
+    game_info()
+
+def get_user_info():
+    url = 'https://member.kwwblcj.com/member/api/info/?userKeys=v1.0&pageName=member-info-index-search&formName=searchForm&kwwMember.memberId='+str(memberId)+'&kwwMember.unionid=undefined&memberId='+str(memberId)
+    ts = str(int(time.time() * 1000))
+    numer = random.randrange(0,31)
+    numerstr = str(numer)
+    t = memberId
+    sign = s(ts,t,numer)
+    headers = {
+            'Connection': 'keep-alive',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
+            'Referer': 'https://servicewechat.com/wxfb0905b0787971ad/34/page-frame.html',
+            'Accept-Encoding': 'gzip, deflate, ',
+            'user-paramname': 'memberId',
+            'user-random': numerstr,
+            'user-sign': sign,
+            'user-timestamp': ts,
+    }
+    r = requests.get(url,headers=headers)
+    global memberName,openId,headUrl,rowKey
+    if r.status_code == 200:
+        try:
+            print(r.json()['msg'])
+            print('用户:',r.json()['ids']['memberInfo']['userCname'])
+            #print(r.json())
+        except Exception as e:
+            print(e)
+
+    else:
+        print('请求失败')
 
 def activity_url():
     global redirect
@@ -92,7 +136,7 @@ def game_info():
         if r.json()['data']['remainFreeJoinTimes'] > 0:
             print('免费天降好礼')
             print('开始游戏')
-            start()
+            game_start()
             # if r.json()['data']['remainJoinTimes'] > 0:
             #     print('积分天降好礼')
             #     i = r.json()['data']['remainJoinTimes'] - r.json()['data']['remainFreeJoinTimes']
@@ -117,7 +161,7 @@ def session_cookie(url):
         cookie_value += x + '=' + y + ';'
     return cookie_value
 
-def start():
+def game_start():
     ts = str(time.time() * 1000)
     url = 'https://89420.activity-20.m.duiba.com.cn/aaw/superSurprise/doJoin?_={}'.format(ts)
     headers = {
@@ -222,8 +266,6 @@ def encript(str):
     return res
 
 if __name__ == "__main__":
-    activity_url()
-    login_free_plugin()
-    game_info()
+   start() 
 
 

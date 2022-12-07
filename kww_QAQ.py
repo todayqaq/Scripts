@@ -1,30 +1,40 @@
 # -*- coding: utf-8 -*-
 
-import requests,json,time,random,datetime,config,notify,hashlib
+import requests,json,time,random,datetime,config,notify,hashlib,config
 from urllib.parse import quote, unquote
 
-# 抓包 填写自己的 memberId
+# 抓包 在配置文件config中kww_memberId 填写自己的 memberId
+# 支持多账号
 # 微信小程序 口味王 
 # 完成查询积分、签到、收青果、阅读文章、完善信息、开启签到提醒、订阅活动通知
 # 小游戏 天降好礼、海岛游乐场 [superSurprise_QAQ.py,underseaGame_QAQ.py]
 # 其他任务待添加
 
-memberId = config.kww['memberId']
-
-
-# 不需要填写
-memberName = ''
 l = [ "A", "Z", "B", "Y", "C", "X", "D", "T", "E", "S", "F", "R", "G", "Q", "H", "P", "I", "O", "J", "N", "k", "M", "L", "a", "c", "d", "f", "h", "k", "p", "y", "n" ]
-article_Title = []
-article_total = 0
-notice_str = ''
-undone = []
-completed = []
-openId = ''
-headUrl = ''
-rowKey = ''
 today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+notice_str = ''
 
+def start():
+    print("===== 共发现 " + str(len(config.kww_memberId)) + " 个账号! =====")
+    for inx, id in enumerate(config.kww_memberId):
+        global memberId,completed,undone,article_Title,article_total,openId,headUrl,rowKey,memberName
+        print("===== 开始第" + str(inx + 1) + "个账号 =====")
+        memberId = id
+        undone = []
+        completed = []
+        article_Title = []
+        article_total = 0
+        openId = ''
+        headUrl = ''
+        rowKey = ''
+        memberName = ''
+        all()
+
+def all():
+    get_user_info()
+    get_score()
+    get_signin_info()
+    daily_task()
 
 def get_user_info():
     url = 'https://member.kwwblcj.com/member/api/info/?userKeys=v1.0&pageName=member-info-index-search&formName=searchForm&kwwMember.memberId='+str(memberId)+'&kwwMember.unionid=undefined&memberId='+str(memberId)
@@ -46,15 +56,18 @@ def get_user_info():
     r = requests.get(url,headers=headers)
     global memberName,openId,headUrl,rowKey
     if r.status_code == 200:
-        print(r.json()['msg'])
-        print('用户:',r.json()['ids']['memberInfo']['userCname'])
-        memberName = r.json()['ids']['memberInfo']['userCname']
-        openId = r.json()['ids']['memberInfo']['openid']
-        headUrl = r.json()['ids']['memberInfo']['headUrl']
-        rowKey = r.json()['ids']['memberInfo']['rowKey']
-        global notice_str
-        notice_str += '用户:'+str(r.json()['ids']['memberInfo']['userCname'])+'\n'
-        #print(r.json())
+        try:
+            print(r.json()['msg'])
+            print('用户:',r.json()['ids']['memberInfo']['userCname'])
+            memberName = r.json()['ids']['memberInfo']['userCname']
+            openId = r.json()['ids']['memberInfo']['openid']
+            headUrl = r.json()['ids']['memberInfo']['headUrl']
+            rowKey = r.json()['ids']['memberInfo']['rowKey']
+            global notice_str
+            notice_str += '用户:'+str(r.json()['ids']['memberInfo']['userCname'])+'\n'
+            #print(r.json())
+        except Exception as e:
+            print(e)
 
     else:
         print('请求失败')
@@ -78,12 +91,16 @@ def get_signin_info():
     r = requests.get(url,headers=headers)
     global memberName,openId,headUrl,rowKey
     if r.status_code == 200:
-        signinStatus = r.json()['rows']['data']
-        #print(signinStatus)
-        for row in signinStatus:
-            if row['actionDate'] == today and row['flag'] == '0':
-                print('开始签到')
-                sign_in()                        
+        try:
+            signinStatus = r.json()['rows']['data']
+            #print(signinStatus)
+            for row in signinStatus:
+                if row['actionDate'] == today and row['flag'] == '0':
+                    print('开始签到')
+                    sign_in()
+        except Exception as e:
+            print(e)
+                             
     else:
         print('请求失败')
 
@@ -109,10 +126,13 @@ def sign_in():
 
     r = requests.post(url,headers=headers,data=json.dumps(body))
     if r.status_code == 200:
-        print('签到:',r.json()['msg'])
-        #print(r.json())
-        global notice_str
-        notice_str += '签到:'+str(r.json()['msg'])+'\n'
+        try:
+            print('签到:',r.json()['msg'])
+            #print(r.json())
+            global notice_str
+            notice_str += '签到:'+str(r.json()['msg'])+'\n'
+        except Exception as e:
+            print(e)
 
     else:
         print('请求失败')
@@ -136,9 +156,12 @@ def get_score():
     }
     r = requests.get(url,headers=headers)
     if r.status_code == 200:
-        print('积分:',r.json()['rows'][0])
-        global notice_str
-        notice_str += '积分:'+str(r.json()['rows'][0])+'\n'
+        try:
+            print('积分:',r.json()['rows'][0])
+            global notice_str
+            notice_str += '积分:'+str(r.json()['rows'][0])+'\n'
+        except Exception as e:
+            print(e)
     else:
         print('请求失败')
 
@@ -153,16 +176,19 @@ def article_list():
     }
     r =requests.get(url,headers=headers)
     if r.status_code == 200:
-        global article_total
-        article_total = r.json()['total']
-        #print(r.json())
-        for row in r.json()['rows']:
-         for key in row:
-            global article_List
-            if key == 'title':
-                #print(row[key])
-                article_Title.append(row[key])
-        #print(article_List)
+        try:
+            global article_total
+            article_total = r.json()['total']
+            #print(r.json())
+            for row in r.json()['rows']:
+                for key in row:
+                    global article_List
+                    if key == 'title':
+                        #print(row[key])
+                        article_Title.append(row[key])
+            #print(article_List)
+        except Exception as e:
+            print(e)
     else:
         print('请求失败')
 
@@ -187,12 +213,13 @@ def read_task():
     }
     r = requests.get(url,headers=headers)
     if r.status_code == 200:
-        if r.json()['flag'] == 'T':
-            print('每日阅读:',True)
-            global notice_str
-            notice_str += '每日阅读:'+str(True)+'\n'
-        
-
+        try:
+            if r.json()['flag'] == 'T':
+                print('每日阅读:',True)
+                global notice_str
+                notice_str += '每日阅读:'+str(True)+'\n'
+        except Exception as e:
+            print(e)       
     else:
         print('请求失败')
 
@@ -216,10 +243,13 @@ def green():
     }
     r =requests.get(url,headers=headers)
     if r.status_code == 200:
-        if r.json()['flag'] == 'T':
-            print('访问青果',True)
-            global notice_str
-            notice_str += '访问青果:'+str(True)+'\n'
+        try:
+            if r.json()['flag'] == 'T':
+                print('访问青果',True)
+                global notice_str
+                notice_str += '访问青果:'+str(True)+'\n'
+        except Exception as e:
+            print(e)
         
     else:
         print('请求失败')
@@ -243,9 +273,12 @@ def task_flag():
     }
     r = requests.get(url,headers=headers)
     if r.status_code == 200:
-        print('订阅活动通知:',True)
-        global notice_str
-        notice_str += '订阅活动通知:'+str(True)+'\n'
+        try:
+            print('订阅活动通知:',True)
+            global notice_str
+            notice_str += '订阅活动通知:'+str(True)+'\n'
+        except Exception as e:
+            print(e)
     else:
         print('请求失败')
 
@@ -326,20 +359,23 @@ def task_list():
     r = requests.get(url,headers=headers)
     global completed
     if r.status_code == 200:
-        rows = r.json()['rows']
-        for row in rows:
-            if row['complete'] == '1':
-                completed.append({
-                    'infoId':row['infoId'],
-                    'taskTitle':row['taskTitle']
-                    
+        try:
+            rows = r.json()['rows']
+            for row in rows:
+                if row['complete'] == '1':
+                    completed.append({
+                        'infoId':row['infoId'],
+                        'taskTitle':row['taskTitle']
+                        
+                        })
+                else:
+                    undone.append({
+                        'infoId':row['infoId'],
+                        'taskTitle':row['taskTitle']
+                        
                     })
-            else:
-                undone.append({
-                    'infoId':row['infoId'],
-                    'taskTitle':row['taskTitle']
-                    
-                })
+        except Exception as e:
+            print(e)
         
     else:
         print('请求失败')
@@ -375,8 +411,5 @@ def encript(str):
     return res
 
 if __name__ == "__main__":
-    get_user_info()
-    get_score()
-    get_signin_info()
-    daily_task()
+    start()
     notify.send('口味王',notice_str)
