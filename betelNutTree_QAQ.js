@@ -23,7 +23,7 @@
 const jsname = '海南嫩青果园'
 const $ = Env(jsname)
 
-var redirect,loginUrl,Cookie,token_str,ohjaiohdf_key,token,todaySign,leftEnergyBall,isTravelling
+var redirect,loginUrl,Cookie,token_str,ohjaiohdf_key,token,todaySign,leftEnergyBall,isTravelling,treeInfo_status
 var l = [ "A", "Z", "B", "Y", "C", "X", "D", "T", "E", "S", "F", "R", "G", "Q", "H", "P", "I", "O", "J", "N", "k", "M", "L", "a", "c", "d", "f", "h", "k", "p", "y", "n" ]
 var kwwmemberId = ($.isNode() ? process.env.kwwmemberId : $.getdata("kwwmemberId")) || ""
 var kwwmemberIdArr = []
@@ -85,6 +85,10 @@ async function all(){
     await $.wait(1000)
     if (!todaySign){
         await doSign()
+    }
+    if (treeInfo_status == 11){
+        await $.wait(1000)
+        await collectCoconut()
     }
     if (leftEnergyBall){
         for (let i = 0; i < leftEnergyBall;i++){
@@ -520,6 +524,7 @@ async function game_index(){
                 leftEnergyBall = result.data.leftEnergyBall
                 isTravelling = result.data.isTravelling
                 console.log(`旅行中：${result.data.isTravelling}`)
+                treeInfo_status = result.data.treeInfo.status
             } else {
                 console.log(result) 
             }                                   
@@ -597,6 +602,53 @@ async function doSign(){
             try {
                 let result = response.data
                 console.log(result)                                                                                                    
+            } catch (e) {
+               console.log(e)
+            }
+        }).then(() => {
+            resolve();
+        }).catch(function (err) {
+            console.log(err);
+        })
+
+    })  
+}
+
+async function collectCoconut(){    
+    console.log('\n==== 收获青果 ====\n')
+    await getToken()
+    await $.wait(1000)
+    await decrypt_token(token_str,ohjaiohdf_key)
+    return new Promise((resolve)=>{
+        let ts = Math.round(new Date().getTime() / 1000).toString();      
+        let url = `https://89420.activity-20.m.duiba.com.cn/projectx/p85657820/game/collectCoconut.do?_t=${ts}`
+        let host = (url.split('//')[1]).split('/')[0]
+        let options = {
+            method:'post',
+            url:url,
+            headers: {
+                'Host' : host,
+                'Connection' : 'keep-alive',
+                'Accept-Language' : 'zh-CN,zh-Hans;q=0.8',
+                'Accept-Encoding' : 'gzip',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36',
+                'Referer': 'https://89420.activity-20.m.duiba.com.cn/projectx/p85657820/index.html?appID=89420&from=login&spm=89420.1.1.1',
+                'Cookie':Cookie,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data:`token=${token}&user_type=0&is_from_share=1&_t=${ts}`
+           
+        } 
+        axios.request(options).then(function (response) {
+            try {
+                let result = response.data
+                //console.log(result)
+                if (result.success == true ){
+                    console.log('收获成功')
+                    console.log(result)
+                } else {
+                    console.log(result)
+                }                                                                                              
             } catch (e) {
                console.log(e)
             }
