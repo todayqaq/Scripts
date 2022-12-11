@@ -38,7 +38,7 @@ def get_user_info():
         print('请求失败')
 
 def get_user_points():
-    url = 'https://m.prod.app.hsbcfts.com.cn/api/sapp/biz/pointscenter/pointsindex/v1'
+    url = 'https://mw.prod.app.hsbcfts.com.cn/api/sapp/biz/pointscenter/open/pointsindex/v2'
     headers = {
     'X-HSBC-Global-Channel-Id':'MOBILE_A',
     'X-HSBC-Pinnacle-DeviceNo':'{}'.format(hfyx_deviceNo),
@@ -48,7 +48,7 @@ def get_user_points():
     'User-Agent':'okhttp/4.9.0',
     'X-HSBC-E2E-Trust-Token':'{}'.format(hfyx_token),
     }
-    r = requests.get(url,headers=headers)
+    r = requests.get(url,headers=headers,verify=False)
 
     if r.status_code == 200:
         if r.json()['retCode'] == 10000:
@@ -92,7 +92,7 @@ def user_sign():
     #print("body数据：",data_body)
     json_data_body = json.dumps(data_body)
     #print("json数据：",json_data_body)
-    url = 'https://m.prod.app.hsbcfts.com.cn/api/sapp/biz/pointscenter/signin/v2'
+    url = 'https://m.prod.app.hsbcfts.com.cn/api/sapp/biz/pointscenter/signin/v3'
     headers = {
     'Content-Type': 'application/json',
     'X-HSBC-Global-Channel-Id':'MOBILE_A',
