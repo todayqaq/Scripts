@@ -56,10 +56,11 @@ def signin():
 
     r = requests.post(url,headers=headers,data=json.dumps(data_body))
     if r.status_code == 200:
-        #print(r.json())
-        print('签到获得积分:',r.json()['data']['point'])
-        print('已连续签到:',str(r.json()['data']['periodCheckInDays'])+'天')
-        
+        if r.json()['resultCode'] == 200:
+            print('签到获得积分:',r.json()['data']['point'])
+            print('已连续签到:',str(r.json()['data']['periodCheckInDays'])+'天')
+        if r.json()['resultCode'] == 90050011:
+            print(r.json()['errMsg'])                   
             
     else:
         print('请求失败')
