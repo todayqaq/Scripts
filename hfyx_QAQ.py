@@ -31,9 +31,12 @@ def get_user_info():
             global notice_str
             userId = r.json()['data']['userId']
             notice_str += '用户:'+r.json()['data']['phone']+'\n'
+            get_user_points()
         else:
             print(r.json()['message'])
-            
+    elif r.status_code == 401:
+        print('账号token可能过期，请重新获取')
+        notice_str += '账号token可能过期，请重新获取'+'\n'    
     else:
         print('请求失败')
 
@@ -123,5 +126,4 @@ def user_sign():
 
 if __name__ == "__main__":
     get_user_info()
-    get_user_points()
     notify.send('汇丰优选',notice_str)
