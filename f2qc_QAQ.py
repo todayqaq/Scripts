@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import requests,json
+import requests,json,notify
 from urllib.parse import quote, unquote
 
 ## 非凡汽车 签到、转发
 ## 抓包后找到 token、watch-man-token 填入自己的信息
 f2_token = ""
 f2_watch_man_token = ""
+notice_str = ''
 
 def get_user_info():
     urlParam = quote(str({"token":"{}".format(f2_token),"brandCode":4}))
@@ -16,8 +17,17 @@ def get_user_info():
     }
     r = requests.get(url,headers=headers)
     if r.status_code == 200:
-        print('用户:',json.loads(r.json()['data'])['content']['username'])
-        print('积分:',json.loads(r.json()['data'])['content']['points'])
+        global notice_str
+        if ('err_resp' in r.json() and r.json()['err_resp']['code'] == '14101'):          
+            print(r.json()['err_resp']['msg'])
+            notice_str += r.json()['err_resp']['msg']+'\n'
+        else:
+            print('用户:',json.loads(r.json()['data'])['content']['username'])
+            print('积分:',json.loads(r.json()['data'])['content']['points'])
+            notice_str += '用户:'+json.loads(r.json()['data'])['content']['username']+'\n'
+            notice_str += '积分:'+str(json.loads(r.json()['data'])['content']['points'])+'\n'
+            share()
+            signin()
             
     else:
         print('请求失败')
@@ -36,9 +46,10 @@ def share():
 
     r = requests.post(url,headers=headers,data=json.dumps(data_body))
     if r.status_code == 200:
+        global notice_str
         #print(r.json())        
         print('分享结果:',r.json()['success'])
-        
+        notice_str += '分享结果:'+str(r.json()['success'])+'\n'
     else:
         print('请求失败')
 
@@ -56,11 +67,17 @@ def signin():
 
     r = requests.post(url,headers=headers,data=json.dumps(data_body))
     if r.status_code == 200:
+        global notice_str
         if r.json()['resultCode'] == 200:
             print('签到获得积分:',r.json()['data']['point'])
             print('已连续签到:',str(r.json()['data']['periodCheckInDays'])+'天')
+            notice_str += '签到获得积分:'+str(r.json()['data']['point'])+'\n'
+            notice_str += '已连续签到:'+str(r.json()['data']['periodCheckInDays'])+'天'+'\n'
         if r.json()['resultCode'] == 90050011:
-            print(r.json()['errMsg'])                   
+            print(r.json()['errMsg'])
+            notice_str += r.json()['errMsg']+'\n'
+        if r.json()['resultCode'] == 21104:
+            print(r.json()['errMsg'])               
             
     else:
         print('请求失败')
@@ -68,5 +85,4 @@ def signin():
 
 if __name__ == "__main__":
     get_user_info()
-    share()
-    signin()
+    notify.send('非凡汽车',notice_str)
